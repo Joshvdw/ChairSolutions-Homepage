@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .sw { display: flex; flex-direction: column; gap: 8px; }
+  .chip { height: 90px; border-radius: 12px; border: 1px solid var(--border-subtle); }
+  .name { font-size: 13px; font-weight: 600; color: var(--fg-primary); }
+  .hex { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--fg-muted); text-transform: uppercase; }
+</style></head>
+<body><div class="card">
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:#1F1A14"></div><div class="name">Ink 900</div><div class="hex">#1F1A14 · text</div></div>
+    <div class="sw"><div class="chip" style="background:#2D2620"></div><div class="name">Ink 800</div><div class="hex">#2D2620 · button</div></div>
+    <div class="sw"><div class="chip" style="background:#4A4138"></div><div class="name">Ink 700</div><div class="hex">#4A4138 · body</div></div>
+    <div class="sw"><div class="chip" style="background:#7A6E60"></div><div class="name">Ink 500</div><div class="hex">#7A6E60 · muted</div></div>
+    <div class="sw"><div class="chip" style="background:#A89C8B"></div><div class="name">Ink 400</div><div class="hex">#A89C8B · disabled</div></div>
+  </div>
+</div></body></html>

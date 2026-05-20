@@ -1,0 +1,200 @@
+/* =========================================================================
+   Chair Solutions — Design Tokens
+   Direction D — Considered Craft
+   ========================================================================= */
+
+/* Plus Jakarta Sans — loaded via Google Fonts (see fonts/README.md) */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap");
+
+:root {
+  /* ---------------------------------------------------------------------
+     COLOUR — warm neutral palette, photography does the heavy lifting.
+     UI colour is restrained. Accents emerge from imagery.
+     --------------------------------------------------------------------- */
+
+  /* Surfaces — cream, never pure white */
+  --cs-cream-50:  #FBF8F3;   /* page background — warmest, lightest */
+  --cs-cream-100: #F6F1E8;   /* card / banded section */
+  --cs-cream-200: #EDE5D6;   /* subtle fill, hover surface */
+  --cs-cream-300: #DCD1BC;   /* divider, faint border */
+
+  /* Ink — cool charcoal */
+  --cs-ink-900:   #18191F;   /* primary text, body type */
+  --cs-ink-800:   #23262E;   /* dark surface (footer) */
+  --cs-ink-700:   #3A3F4F;   /* secondary text */
+  --cs-ink-500:   #646B7E;   /* muted text, captions */
+  --cs-ink-400:   #9AA2B5;   /* placeholder, disabled */
+
+  /* Charcoal — replaces umber for dark accents, CTAs, key emphasis */
+  --cs-umber-900: #1E2232;   /* deepest — solid CTA fill */
+  --cs-umber-700: #2D3244;   /* hover state */
+  --cs-umber-500: #5A6275;   /* mid-tone, scrollbar */
+  --cs-umber-300: #C49978;   /* light umber wash */
+  --cs-umber-100: #EFE0D1;   /* tinted background */
+
+  /* Denim — sparing accent only (badges, small UI moments) */
+  --cs-denim-700: #3A4A5C;   /* deep denim */
+  --cs-denim-500: #5C7388;   /* mid denim, from couch upholstery */
+  --cs-denim-200: #C8D2DC;   /* faint denim tint */
+
+  /* Supporting warm grey — dividers, soft UI */
+  --cs-warmgrey-100: #E8E2D6;
+  --cs-warmgrey-300: #BFB6A6;
+  --cs-warmgrey-500: #8A8273;
+
+  /* Semantic — used sparingly */
+  --cs-positive: #4F6B47;     /* muted forest green */
+  --cs-attention: #B0743A;    /* umber-amber, never bright */
+
+  /* ---------------------------------------------------------------------
+     SEMANTIC ALIASES — use these in components
+     --------------------------------------------------------------------- */
+  --bg-page:        var(--cs-cream-50);
+  --bg-surface:     var(--cs-cream-100);
+  --bg-raised:      #FFFFFF;
+  --bg-hover:       var(--cs-cream-200);
+
+  --fg-primary:     var(--cs-ink-900);
+  --fg-secondary:   var(--cs-ink-700);
+  --fg-muted:       var(--cs-ink-500);
+  --fg-on-dark:     var(--cs-cream-50);
+
+  --accent:         var(--cs-umber-900);
+  --accent-hover:   var(--cs-umber-700);
+  --accent-soft:    var(--cs-umber-100);
+
+  --accent-2:       var(--cs-denim-500);
+
+  --border-subtle:  var(--cs-cream-300);
+  --border-strong:  var(--cs-ink-900);
+  --divider:        var(--cs-warmgrey-100);
+
+  /* ---------------------------------------------------------------------
+     TYPOGRAPHY — Plus Jakarta Sans, single family, weight contrast
+     --------------------------------------------------------------------- */
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  /* Type scale — editorial, generous, restrained at small sizes */
+  --fs-display: clamp(2.75rem, 5vw + 1rem, 4.5rem);   /* 44–72px hero */
+  --fs-h1:      clamp(2.25rem, 3vw + 1rem, 3.25rem);  /* 36–52px section */
+  --fs-h2:      clamp(1.75rem, 2vw + 0.75rem, 2.25rem); /* 28–36px */
+  --fs-h3:      clamp(1.25rem, 1vw + 0.75rem, 1.5rem); /* 20–24px */
+  --fs-lead:    1.25rem;       /* 20px */
+  --fs-body:    1.0625rem;     /* 17px */
+  --fs-small:   0.9375rem;     /* 15px */
+  --fs-eyebrow: 0.8125rem;     /* 13px, uppercase tracked */
+
+  --lh-tight:   1.05;
+  --lh-snug:    1.2;
+  --lh-body:    1.55;
+  --lh-loose:   1.7;
+
+  --tracking-display: -0.022em;
+  --tracking-body:    -0.005em;
+  --tracking-eyebrow: 0.08em;
+
+  /* ---------------------------------------------------------------------
+     SPACING — 4px base, generous on the upper end
+     --------------------------------------------------------------------- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+  --space-10: 128px;
+  --space-11: 160px;
+
+  /* ---------------------------------------------------------------------
+     RADII — pill buttons, soft cards, never overly rounded
+     --------------------------------------------------------------------- */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-pill: 999px;
+
+  /* ---------------------------------------------------------------------
+     SHADOWS — used sparingly, warm-tinted (never grey-blue)
+     --------------------------------------------------------------------- */
+  --shadow-xs: 0 1px 2px rgba(31, 26, 20, 0.04);
+  --shadow-sm: 0 2px 8px rgba(31, 26, 20, 0.06);
+  --shadow-md: 0 8px 24px rgba(31, 26, 20, 0.08);
+  --shadow-lg: 0 24px 60px rgba(31, 26, 20, 0.12);
+
+  /* ---------------------------------------------------------------------
+     MOTION — restrained, considered
+     --------------------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 180ms;
+  --duration-base: 280ms;
+  --duration-slow: 600ms;
+
+  /* ---------------------------------------------------------------------
+     LAYOUT
+     --------------------------------------------------------------------- */
+  --container-max: 1320px;
+  --container-pad: clamp(20px, 4vw, 64px);
+}
+
+/* =========================================================================
+   BASE — semantic element styling
+   ========================================================================= */
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--fg-primary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  letter-spacing: var(--tracking-body);
+  font-weight: 400;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--fg-primary);
+  letter-spacing: var(--tracking-display);
+  margin: 0;
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--fs-display); font-weight: 700; line-height: var(--lh-tight); }
+h2 { font-size: var(--fs-h1);      font-weight: 600; line-height: var(--lh-snug); }
+h3 { font-size: var(--fs-h2);      font-weight: 600; line-height: var(--lh-snug); }
+h4 { font-size: var(--fs-h3);      font-weight: 600; line-height: var(--lh-snug); }
+
+p {
+  margin: 0 0 1em;
+  color: var(--fg-secondary);
+  text-wrap: pretty;
+}
+
+.eyebrow {
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.lead {
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+  color: var(--fg-secondary);
+  font-weight: 400;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection { background: var(--cs-umber-300); color: var(--fg-primary); }

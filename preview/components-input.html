@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .card { padding: 32px 40px; gap: 16px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .field label { font-size: 13px; font-weight: 500; color: var(--fg-primary); display: block; margin-bottom: 6px; }
+  .field .hint { font-size: 12px; color: var(--fg-muted); margin-top: 6px; }
+  .field input, .field select, .field textarea {
+    width: 100%; box-sizing: border-box;
+    font-family: var(--font-sans); font-size: 15px;
+    background: #fff; border: 1px solid var(--border-subtle); border-radius: 8px;
+    padding: 12px 14px; color: var(--fg-primary);
+    transition: border-color 180ms ease-out, box-shadow 180ms ease-out;
+  }
+  .field input:focus { outline: none; border-color: var(--cs-umber-900); box-shadow: 0 0 0 3px rgba(59,36,24,0.10); }
+  .field.invalid input { border-color: #B0743A; }
+  .field.invalid .hint { color: #B0743A; }
+</style></head>
+<body><div class="card">
+  <div class="row">
+    <div class="field">
+      <label>Company name</label>
+      <input value="Hartwell Architects" />
+      <div class="hint">Used on your quote &amp; spec sheets.</div>
+    </div>
+    <div class="field invalid">
+      <label>Email</label>
+      <input value="m.hartwell@" />
+      <div class="hint">Please enter a complete email address.</div>
+    </div>
+  </div>
+</div></body></html>

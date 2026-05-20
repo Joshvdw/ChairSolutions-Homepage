@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .card { padding: 24px 32px; }
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .chip { font-family: var(--font-sans); font-size: 14px; font-weight: 500; padding: 10px 20px; border-radius: 999px; cursor: pointer; border: none; transition: all 180ms ease-out; }
+  .active { background: var(--cs-umber-900); color: var(--cs-cream-50); }
+  .inactive { background: var(--cs-cream-200); color: var(--fg-primary); }
+  .inactive:hover { background: var(--cs-cream-300); }
+  .badge-row { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 999px; letter-spacing: 0.02em; }
+  .b-save { background: var(--cs-umber-900); color: var(--cs-cream-50); }
+  .b-new  { background: var(--cs-denim-500); color: #fff; }
+  .b-stock { background: #EAF0E7; color: #4F6B47; }
+  .b-mto  { background: #F5E4D2; color: #8B5A3C; }
+</style></head>
+<body><div class="card">
+  <div class="row">
+    <button class="chip active">Office &amp; task</button>
+    <button class="chip inactive">Hospitality</button>
+    <button class="chip inactive">Healthcare</button>
+    <button class="chip inactive">Education</button>
+    <button class="chip inactive">Soft seating</button>
+  </div>
+  <div class="badge-row">
+    <span class="badge b-save">Save 18%</span>
+    <span class="badge b-new">New for 2026</span>
+    <span class="badge b-stock">In stock · NZ</span>
+    <span class="badge b-mto">Made‑to‑order · 4 wks</span>
+  </div>
+</div></body></html>

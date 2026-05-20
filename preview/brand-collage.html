@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .card { padding: 28px 32px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px; align-items: center; }
+  .stage { position: relative; aspect-ratio: 4/3; }
+  .primary, .overlay { position: absolute; border-radius: 22px; overflow: hidden; box-shadow: 0 12px 40px rgba(31,26,20,0.18); }
+  .primary { inset: 0 0 0 18%; }
+  .overlay { left: 0; bottom: 6%; width: 44%; aspect-ratio: 3/4; transform: rotate(-4deg); }
+  .primary img, .overlay img { width: 100%; height: 100%; object-fit: cover; }
+  .copy h3 { font-size: 22px; font-weight: 600; letter-spacing: -0.018em; line-height: 1.2; color: var(--fg-primary); margin: 0 0 10px; }
+  .copy p { font-size: 13px; color: var(--fg-secondary); line-height: 1.55; margin: 0; }
+  .copy ul { margin: 12px 0 0; padding-left: 16px; }
+  .copy li { font-size: 12px; color: var(--fg-secondary); margin-bottom: 4px; }
+</style></head>
+<body><div class="card">
+  <div class="stage">
+    <div class="primary"><img src="../assets/photos/hospitality.webp" alt=""></div>
+    <div class="overlay"><img src="../assets/photos/healthcare.webp" alt=""></div>
+  </div>
+  <div class="copy">
+    <h3>Photo overlay collage</h3>
+    <p>The one moment of visual playfulness. A secondary image floats over the primary at a slight rotation; the rest of the page stays structured.</p>
+    <ul>
+      <li>Rotation: 3–6° (typically −4°)</li>
+      <li>Radius: 22–24 px on both images</li>
+      <li>Shadow: <code>--shadow-lg</code> warm‑tinted</li>
+      <li>Settles into position on scroll, <code>ease‑out</code></li>
+    </ul>
+  </div>
+</div></body></html>

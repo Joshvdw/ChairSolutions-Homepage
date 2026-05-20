@@ -1,0 +1,32 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
+  .stack { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .sw { display: flex; flex-direction: column; gap: 8px; }
+  .chip { height: 70px; border-radius: 12px; border: 1px solid var(--border-subtle); }
+  .name { font-size: 12px; font-weight: 600; color: var(--fg-primary); }
+  .hex { font-family: ui-monospace, Menlo, monospace; font-size: 10px; color: var(--fg-muted); text-transform: uppercase; }
+  .sem { display: flex; flex-direction: column; gap: 12px; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; width: fit-content; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+</style></head>
+<body><div class="card">
+  <div class="wrap">
+    <div>
+      <div class="label" style="margin-bottom:10px">Warm grey · supporting</div>
+      <div class="stack">
+        <div class="sw"><div class="chip" style="background:#E8E2D6"></div><div class="name">Warm 100</div><div class="hex">#E8E2D6</div></div>
+        <div class="sw"><div class="chip" style="background:#BFB6A6"></div><div class="name">Warm 300</div><div class="hex">#BFB6A6</div></div>
+        <div class="sw"><div class="chip" style="background:#8A8273"></div><div class="name">Warm 500</div><div class="hex">#8A8273</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="label" style="margin-bottom:10px">Semantic</div>
+      <div class="sem">
+        <span class="pill" style="background:#EAF0E7; color:#4F6B47;"><span class="dot" style="background:#4F6B47"></span>In stock · NZ warehouse</span>
+        <span class="pill" style="background:#F5E4D2; color:#B0743A;"><span class="dot" style="background:#B0743A"></span>Made‑to‑order · 4 weeks</span>
+        <span class="pill" style="background:#F6F1E8; color:#4A4138;"><span class="dot" style="background:#7A6E60"></span>Discontinued line</span>
+      </div>
+    </div>
+  </div>
+</div></body></html>
