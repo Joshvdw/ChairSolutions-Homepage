@@ -1,0 +1,295 @@
+/* ================================================================
+   Chair Solutions — Animation Layer
+   Mirrors wvh.co.nz animation spec (Motion One + CSS)
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   Design tokens
+   ---------------------------------------------------------------- */
+:root {
+  --anim-primary: 0.5s cubic-bezier(0.3, 1, 0.3, 1);
+  --anim-fast:    0.3s cubic-bezier(0.7, 0, 0.3, 1);
+  --anim-smooth:  0.7s cubic-bezier(0.7, 0, 0.3, 1);
+  --anim-nav:     0.5s cubic-bezier(0.6, 0, 0.4, 1);
+  --anim-short:   0.2s cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+/* ----------------------------------------------------------------
+   Keyframes
+   ---------------------------------------------------------------- */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes appear-down {
+  from { opacity: 0; transform: translateY(-1rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes appear-up {
+  from { opacity: 0; transform: translateY(1rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+@keyframes placeholder-shimmer {
+  0%  { background-position: -150% 0; }
+  to  { background-position:  150% 0; }
+}
+@keyframes scrolling-left {
+  0%  { transform: translate3d(-100%, 0, 0); visibility: visible; }
+  to  { transform: translate3d(-200%, 0, 0); }
+}
+@keyframes scrolling-right {
+  0%  { transform: translate3d(-200%, 0, 0); visibility: visible; }
+  to  { transform: translate3d(-100%, 0, 0); }
+}
+@keyframes beat {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.2); }
+}
+@keyframes hotspot {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(0.9); }
+}
+@keyframes preloading {
+  0%,    88.1%, 100% { transform-origin: left center;  transform: scaleX(0); }
+  33%,   44%         { transform-origin: left center;  transform: scaleX(1); }
+  44.1%, 88%         { transform-origin: right center; transform: scaleX(0); }
+}
+
+/* ----------------------------------------------------------------
+   Nav — transparent at top, cream on scroll
+   ---------------------------------------------------------------- */
+.nav__inner {
+  background: transparent;
+  border-color: transparent;
+}
+
+/* Text and icon elements: white at top, transition to dark on scroll */
+.nav__logo,
+.nav__item > a,
+.nav__links > a,
+.iconbtn {
+  color: rgba(255, 255, 255, 0.95);
+  transition:
+    color            var(--anim-nav),
+    background-color var(--anim-fast),
+    opacity          var(--anim-fast);
+}
+
+/* Chevron SVG inherits currentColor via stroke/fill */
+.nav__chev {
+  opacity: 0.85;
+}
+
+/* Scrolled: cream pill background, dark text */
+.nav.is-scrolled .nav__inner {
+  background: rgba(251, 248, 243, 0.92);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-color: rgba(31, 26, 20, 0.10);
+  box-shadow: var(--shadow-sm);
+}
+.nav.is-scrolled .nav__logo,
+.nav.is-scrolled .nav__item > a,
+.nav.is-scrolled .nav__links > a,
+.nav.is-scrolled .iconbtn {
+  color: var(--fg-primary);
+}
+
+/* Dropdown panel links always dark (panel has its own cream background) */
+.dd__panel a {
+  color: var(--fg-primary);
+}
+
+/* Nav inner background/border transition */
+.nav__inner {
+  transition:
+    background-color       var(--anim-nav),
+    backdrop-filter        var(--anim-nav),
+    -webkit-backdrop-filter var(--anim-nav),
+    box-shadow             var(--anim-nav),
+    border-color           var(--anim-nav);
+}
+
+/* ----------------------------------------------------------------
+   Button fill — hover wipe (y: 110% → 0% on enter, → -110% on leave)
+   Duration 0.8s matches reference site feel.
+   Text colour transition matches fill timing via --anim-primary.
+   ---------------------------------------------------------------- */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition:
+    color        var(--anim-primary),
+    border-color var(--anim-primary),
+    box-shadow   var(--anim-primary),
+    transform    var(--anim-fast);
+}
+
+.btn__fill {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 130%;
+  height: 280%;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+  transform: translate(-50%, 100%);
+  z-index: 0;
+}
+
+/* Content wrapper injected by JS — keeps text/icons above the fill */
+.btn__content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Fill colours matched to each variant's hover state */
+.btn--primary    .btn__fill { background: #18191F; }
+.btn--outline    .btn__fill { background: var(--cs-ink-900, #1f1a14); }
+.btn--ghost-light .btn__fill { background: var(--cs-cream-50, #fbf8f3); }
+.btn--on-dark    .btn__fill { background: var(--cs-cream-200, #f0ebe2); }
+.btn--umber      .btn__fill { background: var(--cs-umber-700, #5c4433); }
+
+/* Text colour changes on hover — background driven by fill */
+.btn--primary:hover     { background: #3b7f97; }
+.btn--outline:hover     { background: transparent; color: var(--cs-cream-50, #fbf8f3); border-color: transparent; }
+.btn--ghost-light:hover { background: transparent; color: var(--fg-primary, #1f1a14); }
+
+/* ----------------------------------------------------------------
+   Word-wrap split — heading reveal
+   padding/margin trick lets descenders breathe without affecting layout
+   ---------------------------------------------------------------- */
+.word-wrap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: inherit;
+  padding-bottom: 0.15em;
+  margin-bottom: -0.15em;
+}
+.word-inner {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* ----------------------------------------------------------------
+   Icon buttons — consistent hover timing
+   ---------------------------------------------------------------- */
+.iconbtn {
+  transition:
+    background-color var(--anim-fast),
+    color            var(--anim-nav);
+}
+
+/* ----------------------------------------------------------------
+   Product filter chips — consistent hover timing
+   ---------------------------------------------------------------- */
+.chip {
+  transition:
+    background-color var(--anim-fast),
+    color            var(--anim-fast),
+    border-color     var(--anim-fast);
+}
+
+/* ----------------------------------------------------------------
+   Mega menu items — stagger transitions (CSS layer)
+   ---------------------------------------------------------------- */
+.mega__tile {
+  transition: transform var(--anim-primary);
+}
+.mega__tile:hover { transform: translateY(-3px); }
+
+/* ----------------------------------------------------------------
+   Dropdown panel — item transitions
+   ---------------------------------------------------------------- */
+.dd__panel a {
+  transition:
+    background-color var(--anim-fast),
+    transform        1s   cubic-bezier(0.075, 0.82, 0.165, 1),
+    opacity          1s   cubic-bezier(0.19,  1,    0.22,  1);
+}
+
+/* ----------------------------------------------------------------
+   Market card image — smooth zoom
+   ---------------------------------------------------------------- */
+.market__img {
+  transition: transform var(--anim-smooth);
+}
+.market:hover .market__img { transform: scale(1.04); }
+
+/* Market hover crossfade image — sits above primary, below scrim */
+.market__hover-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.market__scrim { z-index: 2; }
+.market__body  { z-index: 3; }
+
+/* ----------------------------------------------------------------
+   Product card hover crossfade image
+   ---------------------------------------------------------------- */
+.product__hover-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.product__tag { z-index: 2; }
+
+/* ----------------------------------------------------------------
+   Resource card image — smooth zoom, anchored 25% from top
+   ---------------------------------------------------------------- */
+.resource__img img {
+  object-position: 0% 25%;
+  transition: transform var(--anim-smooth);
+}
+.resource:hover .resource__img img { transform: scale(1.05); }
+
+/* ----------------------------------------------------------------
+   Collage overlay — settle animation (used by IntersectionObserver)
+   ---------------------------------------------------------------- */
+.collage__overlay {
+  transition:
+    transform var(--anim-smooth),
+    opacity   0.7s cubic-bezier(0.3, 1, 0.3, 1);
+}
+
+/* ----------------------------------------------------------------
+   Reduced motion — ensure everything is visible, disable fill
+   ---------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .word-inner { opacity: 1 !important; transform: none !important; }
+  .hero__bg   { opacity: 1 !important; transform: none !important; }
+  .btn__fill  { display: none; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
