@@ -11,9 +11,9 @@ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const TOUCH   = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
 const EXPO      = [0.16, 1, 0.3, 1];  // expo-out, matches spec
-const FILL_EASE = [0.3, 1, 0.3, 1];   // --anim-primary, used for fill wipe
-const FILL_DUR_IN  = 1.3;              // fill enter duration
-const FILL_DUR_OUT = 1.8;              // fill leave duration — noticeably slower
+const FILL_EASE    = [0.4, 0, 0.6, 1];  // ease-in-out — same curve for enter and exit
+const FILL_DUR_IN  = 0.4;               // enter: shorter travel distance so shorter duration matches exit feel
+const FILL_DUR_OUT = 0.8;               // exit: full travel distance
 
 // ─── Utility ─────────────────────────────────────────────────────────────────
 
@@ -33,7 +33,7 @@ function initNavEntrance() {
   if (!nav) return;
   animate(nav,
     { opacity: [0, 1], transform: ['translateY(-16px)', 'translateY(0)'] },
-    { duration: 0.8, delay: 0.05, easing: EXPO }
+    { duration: 0.8, delay: 0.4, easing: EXPO }
   );
 }
 
@@ -46,60 +46,75 @@ function initHeroEntrance() {
   const eyebrow = document.querySelector('.hero__eyebrow');
   const heading = document.querySelector('.hero__h');
   const sub     = document.querySelector('.hero__sub');
-  const ctas    = document.querySelectorAll('.hero__ctas .btn');
-  const metrics = document.querySelectorAll('.trust__metric');
+  const ctas        = document.querySelectorAll('.hero__ctas .btn');
+  const heroRule = document.querySelector('.hero__rule');
+  const metrics  = document.querySelectorAll('.trust__metric');
 
-  // Bg: prominent zoom-out scale(1.3)→scale(1) + fade-in — long enough to see clearly
+  // Video: CSS can't set the initial transform, so do it here synchronously
   if (video) {
-    // Set initial state synchronously so there's no un-animated frame visible before Motion One starts
     video.style.opacity = '0';
     video.style.transform = 'scale(1.3)';
-    requestAnimationFrame(() => {
+  }
+
+  // Split the heading synchronously so word spans exist before the first paint.
+  // Then make the parent visible — the spans themselves start hidden and animate in.
+  let words = [];
+  if (heading) {
+    words = splitWords(heading);
+    words.forEach(w => { w.style.opacity = '0'; w.style.transform = 'translateY(90%)'; });
+    heading.style.opacity = '1';
+  }
+
+  requestAnimationFrame(() => {
+    if (video) {
       animate(video,
         { transform: ['scale(1.3)', 'scale(1)'], opacity: [0, 1] },
         { duration: 2.4, easing: EXPO }
       );
-    });
-  }
+    }
 
-  // Other elements: short delay so bg entrance is seen, but text doesn't lag too long
-  if (eyebrow) {
-    animate(eyebrow,
-      { opacity: [0, 1] },
-      { duration: 1.4, delay: 0.5, easing: EXPO }
-    );
-  }
+    if (eyebrow) {
+      animate(eyebrow,
+        { opacity: [0, 1] },
+        { duration: 1.4, delay: 0.5, easing: EXPO }
+      );
+    }
 
-  if (heading) {
-    const words = splitWords(heading);
     words.forEach((w, i) => {
       animate(w,
         { transform: ['translateY(90%)', 'translateY(0)'], opacity: [0, 1] },
         { duration: 1, delay: 0.6 + i * 0.04, easing: EXPO }
       );
     });
-  }
 
-  if (sub) {
-    animate(sub,
-      { transform: ['translateY(2rem)', 'translateY(0)'], opacity: [0, 1] },
-      { duration: 1.4, delay: 0.9, easing: EXPO }
-    );
-  }
+    if (sub) {
+      animate(sub,
+        { transform: ['translateY(2rem)', 'translateY(0)'], opacity: [0, 1] },
+        { duration: 1.4, delay: 0.9, easing: EXPO }
+      );
+    }
 
-  if (ctas.length) {
-    animate(ctas,
-      { transform: ['translateY(1.5rem)', 'translateY(0)'], opacity: [0, 1] },
-      { duration: 1, delay: stagger(0.08, { start: 1.1 }), easing: EXPO }
-    );
-  }
+    if (ctas.length) {
+      animate(ctas,
+        { transform: ['translateY(1.5rem)', 'translateY(0)'], opacity: [0, 1] },
+        { duration: 1, delay: stagger(0.08, { start: 1.1 }), easing: EXPO }
+      );
+    }
 
-  if (metrics.length) {
-    animate(metrics,
-      { transform: ['translateY(1.5rem)', 'translateY(0)'], opacity: [0, 1] },
-      { duration: 1, delay: stagger(0.1, { start: 1.3 }), easing: EXPO }
-    );
-  }
+    if (heroRule) {
+      animate(heroRule,
+        { opacity: [0, 1] },
+        { duration: 0.6, delay: 1.3, easing: EXPO }
+      );
+    }
+
+    if (metrics.length) {
+      animate(metrics,
+        { transform: ['translateY(1.5rem)', 'translateY(0)'], opacity: [0, 1] },
+        { duration: 1, delay: stagger(0.1, { start: 1.3 }), easing: EXPO }
+      );
+    }
+  });
 }
 
 // ─── 3. Button fill hover (HoverButton) ──────────────────────────────────────
@@ -127,7 +142,7 @@ function initButtonFills() {
     // Oval fill: always enters from below, exits upward
     btn.addEventListener('mouseenter', () => {
       animate(fill,
-        { transform: ['translate(-50%, 100%)', 'translate(-50%, -50%)'] },
+        { transform: ['translate(-50%, 15%)', 'translate(-50%, -50%)'] },
         { duration: FILL_DUR_IN, easing: FILL_EASE }
       );
     });

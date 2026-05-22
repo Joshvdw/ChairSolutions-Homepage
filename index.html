@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Chair Solutions — Commercial seating, made in New Zealand</title>
+    <script>history.scrollRestoration = 'manual';</script>
     <link rel="stylesheet" href="colors_and_type.css" />
     <link rel="stylesheet" href="animations.css" />
     <style>
@@ -113,11 +114,11 @@
         background: var(--cs-cream-200);
       }
 
-      /* Ghost-light: on leave, reset colour quickly before fill clears */
+      /* Ghost-light: colour resets in sync with fill exit */
       .btn--ghost-light.has-js-fill {
         transition:
           background-color var(--duration-base) var(--ease-out),
-          color 0.15s ease,
+          color 0.45s ease-in-out,
           border-color var(--duration-base) var(--ease-out),
           transform var(--duration-fast) var(--ease-out);
       }
@@ -135,7 +136,7 @@
         /* Colour change starts at ~halfway through the fill (0.45s delay + 0.2s = done at 0.65s ≈ fill midpoint) */
         transition:
           background-color var(--duration-base) var(--ease-out),
-          color 0.2s ease 0.3s,
+          color 0.2s ease 0.1s,
           border-color var(--duration-base) var(--ease-out),
           transform var(--duration-fast) var(--ease-out);
       }
@@ -193,6 +194,7 @@
         right: 0;
         z-index: 50;
         pointer-events: none;
+        opacity: 0;
       }
       .nav__inner {
         pointer-events: auto;
@@ -290,12 +292,10 @@
       /* Simple dropdown (About, Resources) */
       .dd {
         position: absolute;
-        top: calc(
-          100% + 11px
-        ); /* offset down to align panel with the mega menu panel position */
+        top: 100%;
         left: 50%;
         transform: translateX(-50%);
-        padding-top: 6px;
+        padding-top: 17px; /* 11px visual gap + 6px original buffer — keeps spacing identical */
         opacity: 0;
         pointer-events: none;
         transition:
@@ -441,6 +441,7 @@
        --------------------------------------------------------------------- */
       .hero {
         position: relative;
+        height: 100svh;
         min-height: 100vh;
         display: flex;
         align-items: center;
@@ -488,6 +489,16 @@
         align-items: center;
         padding: 0 0 40px;
       }
+      /* Hidden before JS animations kick in — prevents FOUC */
+      .hero__eyebrow,
+      .hero__h,
+      .hero__sub,
+      .hero__ctas .btn,
+      .hero__rule,
+      .trust__metric {
+        opacity: 0;
+      }
+
       .hero__eyebrow {
         color: rgba(251, 248, 243, 0.78);
         margin-bottom: 18px;
@@ -517,13 +528,21 @@
         flex-wrap: wrap;
         justify-content: center;
       }
+      .hero__rule {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: rgba(251, 248, 243, 0.22);
+      }
       .hero__trust {
+        position: relative;
         display: flex;
         gap: clamp(32px, 4vw, 64px);
         align-items: flex-start;
         padding-top: 28px;
         margin-top: 28px;
-        border-top: 1px solid rgba(251, 248, 243, 0.22);
       }
       .trust__metric {
         display: flex;
@@ -1555,6 +1574,7 @@
           </div>
         </div>
         <div class="hero__trust">
+          <div class="hero__rule" aria-hidden="true"></div>
           <div class="trust__metric">
             <span class="trust__num">50 years</span>
             <span class="trust__label">Manufacturing in New Zealand</span>
