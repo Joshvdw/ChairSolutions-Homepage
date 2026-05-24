@@ -160,16 +160,18 @@ function initButtonFills() {
 function initMagnetNav() {
   if (TOUCH || REDUCED) return;
   const STRENGTH = 5;
+  const SPRING = spring();
 
   document.querySelectorAll('.nav__item > a').forEach(link => {
+    let rect = link.getBoundingClientRect();
+    link.addEventListener('mouseenter', () => { rect = link.getBoundingClientRect(); });
     link.addEventListener('mousemove', e => {
-      const r = link.getBoundingClientRect();
-      const x = ((e.clientX - (r.left + r.width  / 2)) / r.width)  * STRENGTH;
-      const y = ((e.clientY - (r.top  + r.height / 2)) / r.height) * STRENGTH;
-      animate(link, { x, y }, { duration: 1.5, easing: spring() });
+      const x = ((e.clientX - (rect.left + rect.width  / 2)) / rect.width)  * STRENGTH;
+      const y = ((e.clientY - (rect.top  + rect.height / 2)) / rect.height) * STRENGTH;
+      animate(link, { x, y }, { duration: 1.5, easing: SPRING });
     });
     link.addEventListener('mouseleave', () => {
-      animate(link, { x: 0, y: 0 }, { duration: 1.5, easing: spring() });
+      animate(link, { x: 0, y: 0 }, { duration: 1.5, easing: SPRING });
     });
   });
 }
@@ -361,27 +363,28 @@ const PRODUCT_IMGS = [
 ];
 
 function injectProductHovers(grid) {
+  if (TOUCH || REDUCED) return;
+
   grid.querySelectorAll('.product').forEach((card, i) => {
     const wrap = card.querySelector('.product__img');
     if (!wrap || wrap.querySelector('.product__hover-img')) return;
 
     const hoverSrc = PRODUCT_IMGS[(i + 1) % PRODUCT_IMGS.length];
-    const hoverImg = document.createElement('img');
-    hoverImg.className = 'product__hover-img';
-    hoverImg.src = hoverSrc;
-    hoverImg.alt = '';
-
-    // Insert after primary img, before the tag
-    const tag = wrap.querySelector('.product__tag');
-    wrap.insertBefore(hoverImg, tag || null);
-
-    if (TOUCH || REDUCED) return;
+    let hoverImg = null;
 
     card.addEventListener('mouseenter', () => {
+      if (!hoverImg) {
+        hoverImg = document.createElement('img');
+        hoverImg.className = 'product__hover-img';
+        hoverImg.alt = '';
+        const tag = wrap.querySelector('.product__tag');
+        wrap.insertBefore(hoverImg, tag || null);
+        hoverImg.src = hoverSrc;
+      }
       animate(hoverImg, { opacity: [0, 1] }, { duration: 0.9, easing: EXPO });
     });
     card.addEventListener('mouseleave', () => {
-      animate(hoverImg, { opacity: [1, 0] }, { duration: 0.7, easing: FILL_EASE });
+      if (hoverImg) animate(hoverImg, { opacity: [1, 0] }, { duration: 0.7, easing: FILL_EASE });
     });
   });
 }
@@ -440,6 +443,8 @@ const MARKET_HOVER = {
 };
 
 function initMarketHover() {
+  if (TOUCH || REDUCED) return;
+
   document.querySelectorAll('.market').forEach(card => {
     const primaryImg = card.querySelector('.market__img');
     if (!primaryImg) return;
@@ -448,21 +453,20 @@ function initMarketHover() {
     const hoverSrc = MARKET_HOVER[filename];
     if (!hoverSrc) return;
 
-    const hoverImg = document.createElement('img');
-    hoverImg.className = 'market__hover-img';
-    hoverImg.src = hoverSrc;
-    hoverImg.alt = '';
-
-    // Insert after primary img — scrim and body remain on top via z-index in CSS
-    primaryImg.after(hoverImg);
-
-    if (TOUCH || REDUCED) return;
+    let hoverImg = null;
 
     card.addEventListener('mouseenter', () => {
+      if (!hoverImg) {
+        hoverImg = document.createElement('img');
+        hoverImg.className = 'market__hover-img';
+        hoverImg.alt = '';
+        primaryImg.after(hoverImg);
+        hoverImg.src = hoverSrc;
+      }
       animate(hoverImg, { opacity: [0, 1] }, { duration: 0.9, easing: EXPO });
     });
     card.addEventListener('mouseleave', () => {
-      animate(hoverImg, { opacity: [1, 0] }, { duration: 0.7, easing: FILL_EASE });
+      if (hoverImg) animate(hoverImg, { opacity: [1, 0] }, { duration: 0.7, easing: FILL_EASE });
     });
   });
 }
