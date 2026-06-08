@@ -47,8 +47,6 @@ function initHeroEntrance() {
   const heading = document.querySelector('.hero__h');
   const sub     = document.querySelector('.hero__sub');
   const ctas        = document.querySelectorAll('.hero__ctas .btn');
-  const heroRule = document.querySelector('.hero__rule');
-  const metrics  = document.querySelectorAll('.trust__metric');
 
   // Video: CSS can't set the initial transform, so do it here synchronously
   if (video) {
@@ -98,20 +96,6 @@ function initHeroEntrance() {
       animate(ctas,
         { transform: ['translateY(1.5rem)', 'translateY(0)'], opacity: [0, 1] },
         { duration: 1, delay: stagger(0.08, { start: 1.1 }), easing: EXPO }
-      );
-    }
-
-    if (heroRule) {
-      animate(heroRule,
-        { opacity: [0, 1] },
-        { duration: 0.6, delay: 1.3, easing: EXPO }
-      );
-    }
-
-    if (metrics.length) {
-      animate(metrics,
-        { transform: ['translateY(1.5rem)', 'translateY(0)'], opacity: [0, 1] },
-        { duration: 1, delay: stagger(0.1, { start: 1.3 }), easing: EXPO }
       );
     }
   });
@@ -176,33 +160,111 @@ function initMagnetNav() {
   });
 }
 
-// ─── 5. Mega menu — Motion One open/close ────────────────────────────────────
+// ─── 5. Simple dropdowns — Motion One stagger open/close ─────────────────────
 
-function initMegaMenu() {
-  const mega  = document.getElementById('megaProducts');
-  const panel = mega?.querySelector('.mega__panel');
-  const tiles = mega?.querySelectorAll('.mega__tile');
-  if (!mega || !panel) return;
+function initDropdowns() {
+  if (REDUCED) return;
 
-  new MutationObserver(() => {
-    if (mega.classList.contains('is-open')) {
-      animate(panel,
-        { transform: ['translateY(-16px)', 'translateY(0)'], opacity: [0, 1] },
-        { duration: 0.4, easing: [0.7, 0, 0.2, 1] }
+  const DD_EASE   = [0.7, 0, 0.2, 1];
+  const ITEM_EASE = [0.075, 0.82, 0.165, 1];
+
+  document.querySelectorAll('.nav__item').forEach(item => {
+    const dd    = item.querySelector('.dd');
+    const panel = dd?.querySelector('.dd__panel');
+    const links = panel ? Array.from(panel.querySelectorAll('a')) : [];
+    if (!dd || !panel || !links.length) return;
+
+    // Pre-hide links for their individual stagger entrance
+    links.forEach(a => { a.style.opacity = '0'; a.style.transform = 'translateY(8px)'; });
+
+    function openDd() {
+      // Animate .dd itself — it carries opacity:0 in CSS, so we must target it directly.
+      // Include translateX(-50%) in the keyframes to preserve the centering transform.
+      animate(dd,
+        { opacity: [0, 1], transform: ['translateX(-50%) translateY(-8px)', 'translateX(-50%) translateY(0)'] },
+        { duration: 0.36, easing: DD_EASE }
       );
-      if (tiles?.length) {
-        animate(tiles,
-          { transform: ['translateY(10px)', 'translateY(0)'], opacity: [0, 1] },
-          { duration: 0.45, delay: stagger(0.04, { start: 0.06 }), easing: [0.075, 0.82, 0.165, 1] }
-        );
-      }
-    } else {
-      animate(panel, { opacity: [1, 0] }, { duration: 0.2, easing: [0.7, 0, 0.2, 1] });
+      animate(links,
+        { opacity: [0, 1], transform: ['translateY(8px)', 'translateY(0)'] },
+        { duration: 1.5, delay: stagger(0.16, { start: 0.08 }), easing: ITEM_EASE }
+      );
     }
-  }).observe(mega, { attributes: true, attributeFilter: ['class'] });
+
+    function closeDd() {
+      animate(dd, { opacity: [1, 0] }, { duration: 0.14, easing: DD_EASE });
+      // Reset so next open starts from initial state
+      links.forEach(a => { a.style.opacity = '0'; a.style.transform = 'translateY(8px)'; });
+    }
+
+    item.addEventListener('mouseenter', openDd);
+    item.addEventListener('mouseleave', closeDd);
+  });
 }
 
-// ─── 6. Scroll reveals ───────────────────────────────────────────────────────
+// ─── 6. Mega menu — Motion One open/close ────────────────────────────────────
+
+function initMegaMenu() {
+  if (REDUCED) return;
+
+  const trigger = document.getElementById('nav-products-item');
+  const mega    = document.getElementById('megaProducts');
+  const panel   = mega?.querySelector('.mega__panel');
+  const tiles   = mega ? Array.from(mega.querySelectorAll('.mega__tile')) : [];
+  if (!trigger || !mega || !panel) return;
+
+  const EASE      = [0.7, 0, 0.2, 1];
+  const TILE_EASE = [0.075, 0.82, 0.165, 1]; // matches spec mega-menu__item easing
+  let isOpen = false;
+  let closeTimer;
+
+  // Pre-hide tiles for their stagger entrance
+  tiles.forEach(t => { t.style.opacity = '0'; t.style.transform = 'translateY(14px)'; });
+
+  function openMega() {
+    clearTimeout(closeTimer);
+    if (isOpen) return;
+    isOpen = true;
+    mega.classList.add('is-open');
+
+    // Animate .mega itself — it carries opacity:0 in CSS, so target it directly
+    animate(mega, { opacity: [0, 1] }, { duration: 0.44, easing: EASE });
+    // Slide the panel separately (no opacity — mega handles fade)
+    animate(panel,
+      { transform: ['translateY(-12px)', 'translateY(0)'] },
+      { duration: 0.7, easing: EASE }
+    );
+    // Stagger tiles — near-immediate start, long duration + elastic easing = fast visible
+    // motion matching the reference site's mega-menu feel
+    const tileAnim = animate(tiles,
+      { opacity: [0, 1], transform: ['translateY(12px)', 'translateY(0)'] },
+      { duration: 1.4, delay: stagger(0.11, { start: 0.12 }), easing: TILE_EASE }
+    );
+    // Clear inline transform after entrance so CSS tile hover (translateY(-3px)) works
+    tileAnim.finished.then(() => {
+      if (isOpen) tiles.forEach(t => t.style.removeProperty('transform'));
+    });
+  }
+
+  function closeMega() {
+    clearTimeout(closeTimer);
+    // 60ms grace period absorbs cursor crossing the bridge gap into the panel
+    closeTimer = setTimeout(() => {
+      if (!isOpen) return;
+      isOpen = false;
+      mega.classList.remove('is-open');
+      animate(mega, { opacity: [1, 0] }, { duration: 0.22, easing: EASE });
+      panel.style.removeProperty('transform');
+      tiles.forEach(t => { t.style.opacity = '0'; t.style.transform = 'translateY(14px)'; });
+    }, 60);
+  }
+
+  trigger.addEventListener('mouseenter', openMega);
+  trigger.addEventListener('mouseleave', closeMega);
+  mega.addEventListener('mouseenter', openMega);
+  mega.addEventListener('mouseleave', closeMega);
+}
+
+// ─── 7. Scroll reveals ───────────────────────────────────────────────────────
 
 function initScrollReveals() {
   if (REDUCED) return;
@@ -291,6 +353,19 @@ function initScrollReveals() {
         { duration: 0.6, delay: stagger(0.06), easing: EXPO }
       );
     }, { margin: '0px 0px -30px 0px' });
+  }
+
+  // Stats band — heritage metrics
+  const statsGrid = document.querySelector('.stats__grid');
+  const stats = document.querySelectorAll('.stat');
+  if (statsGrid && stats.length) {
+    for (const s of stats) s.style.opacity = '0';
+    inView(statsGrid, () => {
+      animate(stats,
+        { transform: ['translateY(40px)', 'translateY(0)'], opacity: [0, 1] },
+        { duration: 0.7, delay: stagger(0.14), easing: EXPO }
+      );
+    }, { margin: '0px 0px -60px 0px' });
   }
 
   // Range chips row
@@ -432,82 +507,52 @@ function initProductGrid() {
   });
 }
 
-// ─── 8. Market card crossfade hover ──────────────────────────────────────────
-
-const MARKET_HOVER = {
-  'boardroom.webp':   'assets/photos/healthcare.webp',
-  'healthcare.webp':  'assets/photos/hospitality.webp',
-  'hospitality.webp': 'assets/photos/boardroom.webp',
-  'education.webp':   'assets/photos/soft-seating.webp',
-  'soft-seating.webp':'assets/photos/education.webp',
-};
-
-function initMarketHover() {
-  if (TOUCH || REDUCED) return;
-
-  document.querySelectorAll('.market').forEach(card => {
-    const primaryImg = card.querySelector('.market__img');
-    if (!primaryImg) return;
-
-    const filename = primaryImg.getAttribute('src').split('/').pop();
-    const hoverSrc = MARKET_HOVER[filename];
-    if (!hoverSrc) return;
-
-    let hoverImg = null;
-
-    card.addEventListener('mouseenter', () => {
-      if (!hoverImg) {
-        hoverImg = document.createElement('img');
-        hoverImg.className = 'market__hover-img';
-        hoverImg.alt = '';
-        primaryImg.after(hoverImg);
-        hoverImg.src = hoverSrc;
-      }
-      animate(hoverImg, { opacity: [0, 1] }, { duration: 0.9, easing: EXPO });
-    });
-    card.addEventListener('mouseleave', () => {
-      if (hoverImg) animate(hoverImg, { opacity: [1, 0] }, { duration: 0.7, easing: FILL_EASE });
-    });
-  });
-}
-
 // ─── 9. Parallax — scroll-linked backgrounds ─────────────────────────────────
 
 function initParallax() {
   if (REDUCED) return;
 
-  const hero   = document.querySelector('.hero');
-  const heroBg = document.querySelector('.hero__bg');
-  if (hero && heroBg) {
-    scroll(
-      animate(heroBg, { transform: ['scale(1)', 'scale(1.12)'] }, { easing: 'linear' }),
-      { target: hero, offset: ['start start', 'end start'] }
-    );
+  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+  // Translate-based layers — the image drifts as its section crosses the
+  // viewport. `scale` keeps the oversized image covering the frame at full
+  // travel (safe travel ≈ (scale − 1) / 2 of the frame height).
+  const layers = [];
+  const addLayer = (elSel, containerSel, opts) => {
+    const el = document.querySelector(elSel);
+    const container = document.querySelector(containerSel);
+    if (el && container) layers.push({ el, container, cur: 0, target: 0, ...opts });
+  };
+
+  // Gentle travel — subtle depth without obvious movement
+  addLayer('.sustainability__bg', '.sustainability', { range: 4, scale: 1.16 });
+  addLayer('.final__bg',          '.final',          { range: 3, scale: 1.14 });
+
+  // Smoothing factor — lower = more easing / softer, slower catch-up
+  const EASE = 0.025;
+
+  function measure() {
+    const vh = window.innerHeight;
+    for (const l of layers) {
+      const r = l.container.getBoundingClientRect();
+      // p: −1 when the section sits just below the viewport, +1 when just above
+      const p = clamp((r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2), -1, 1);
+      l.target = -p * l.range;
+    }
   }
 
-  const sus   = document.querySelector('.sustainability');
-  const susBg = document.querySelector('.sustainability__bg');
-  if (sus && susBg) {
-    scroll(
-      animate(susBg,
-        { transform: ['scale(1.15) translateY(-8%)', 'scale(1.15) translateY(8%)'] },
-        { easing: 'linear' }
-      ),
-      { target: sus, offset: ['start end', 'end start'] }
-    );
+  function frame() {
+    for (const l of layers) {
+      l.cur += (l.target - l.cur) * EASE;
+      l.el.style.transform = `scale(${l.scale}) translateY(${l.cur.toFixed(3)}%)`;
+    }
+    requestAnimationFrame(frame);
   }
 
-  const final   = document.querySelector('.final');
-  const finalBg = document.querySelector('.final__bg');
-  if (final && finalBg) {
-    scroll(
-      animate(finalBg,
-        { transform: ['scale(1.15) translateY(-8%)', 'scale(1.15) translateY(8%)'] },
-        { easing: 'linear' }
-      ),
-      { target: final, offset: ['start end', 'end start'] }
-    );
-  }
+  measure();
+  window.addEventListener('scroll', measure, { passive: true });
+  window.addEventListener('resize', measure);
+  requestAnimationFrame(frame);
 }
 
 // ─── 10. Collage primary — zoom-out on entry ──────────────────────────────────
@@ -528,7 +573,7 @@ function initCollage() {
 
 function initProductsHeader() {
   if (REDUCED) return;
-  const viewAll = document.querySelector('.chips-row .link-arrow');
+  const viewAll = document.querySelector('.products-header .link-arrow');
   if (viewAll) {
     viewAll.style.opacity = '0';
     inView(viewAll, () => {
@@ -537,16 +582,104 @@ function initProductsHeader() {
   }
 }
 
+// ─── 12. Range slider — arrows, drag-to-scroll, edge state ────────────────────
+
+function initRangeSlider() {
+  const track = document.getElementById('productGrid');
+  const prev  = document.getElementById('rangePrev');
+  const next  = document.getElementById('rangeNext');
+  if (!track) return;
+
+  // One card unit = card width + gap, measured from real layout positions
+  function unit() {
+    const cards = track.querySelectorAll('.product');
+    const gap   = parseFloat(getComputedStyle(track).columnGap) || 20;
+    if (cards.length > 1) return cards[1].offsetLeft - cards[0].offsetLeft;
+    if (cards.length === 1) return cards[0].getBoundingClientRect().width + gap;
+    return 280 + gap;
+  }
+
+  // Whole cards that fit in the viewport (the page size)
+  function perPage() {
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 20;
+    return Math.max(1, Math.floor((track.clientWidth + gap) / unit()));
+  }
+
+  // scrollLeft for the final page — the last card-aligned position that is
+  // actually reachable, so the slider settles flush on a full row of cards
+  // (and never bottoms out a few pixels short of the snap point).
+  function lastStart() {
+    const real = track.scrollWidth - track.clientWidth;
+    if (real <= 0) return 0;
+    return Math.floor(real / unit()) * unit();
+  }
+
+  function goTo(left) {
+    track.scrollTo({ left, behavior: 'smooth' });
+  }
+
+  function update() {
+    const end = lastStart();
+    const scrollable = end > 4;
+    if (prev) prev.disabled = !scrollable || track.scrollLeft <= 2;
+    if (next) next.disabled = !scrollable || track.scrollLeft >= end - 2;
+    const nav = (prev || next) && (prev || next).closest('.slider-nav');
+    if (nav) nav.style.display = scrollable ? '' : 'none';
+  }
+
+  // Page on card boundaries; the last next-click snaps exactly to the final row
+  prev && prev.addEventListener('click', () => {
+    const u = unit();
+    goTo(Math.max(0, Math.round(track.scrollLeft / u) * u - perPage() * u));
+  });
+  next && next.addEventListener('click', () => {
+    const u = unit();
+    goTo(Math.min(lastStart(), Math.round(track.scrollLeft / u) * u + perPage() * u));
+  });
+
+  track.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  // Chip switches re-render the grid — re-measure when children change
+  new MutationObserver(update).observe(track, { childList: true });
+
+  // Pointer drag-to-scroll (mouse/pen only — touch scrolls natively)
+  let down = false, startX = 0, startScroll = 0, moved = 0;
+  track.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'touch') return;
+    down = true; moved = 0; startX = e.clientX; startScroll = track.scrollLeft;
+    track.classList.add('is-dragging');
+  });
+  track.addEventListener('pointermove', e => {
+    if (!down) return;
+    const dx = e.clientX - startX;
+    moved = Math.max(moved, Math.abs(dx));
+    track.scrollLeft = startScroll - dx;
+  });
+  function end() {
+    if (!down) return;
+    down = false;
+    track.classList.remove('is-dragging');
+  }
+  track.addEventListener('pointerup', end);
+  track.addEventListener('pointerleave', end);
+  track.addEventListener('pointercancel', end);
+  // Swallow the click that follows a real drag so cards don't navigate
+  track.addEventListener('click', e => { if (moved > 6) e.preventDefault(); }, true);
+
+  update();
+}
+
 // ─── INIT ────────────────────────────────────────────────────────────────────
 
 initNavEntrance();
 initHeroEntrance();
 initButtonFills();
 initMagnetNav();
+initDropdowns();
 initMegaMenu();
 initScrollReveals();
 initProductGrid();
-initMarketHover();
+initRangeSlider();
 // Delay parallax until hero entrance animation is complete to avoid transform conflicts
 setTimeout(initParallax, 2600);
 initCollage();
